@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Map</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  </head>
+  <body>
+    <div id="map" style="width: 100%; height: 500px"></div>
+
+    <script>
+      var map = L.map("map").setView([27.7, 85.3], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      var coordinates = JSON.parse("{{ coordinates | escapejs }}");
+      for (var i = 0; i < coordinates.length; i++) {
+        L.marker([coordinates[i].lat, coordinates[i].lon])
+          .addTo(map)
+          .bindPopup(coordinates[i].name);
+      }
+    </script>
+  </body>
+</html>

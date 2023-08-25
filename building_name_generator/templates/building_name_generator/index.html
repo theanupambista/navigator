@@ -1,0 +1,112 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Building Name Generator</title>
+    <link
+      rel="stylesheet"
+      href="{% static 'building_name_generator/style.css'%}"
+    />
+  </head>
+  <body>
+    <form action="" method="POST" class="new-expense">
+      {% csrf_token %}
+      <div class="new-expense__controls">
+        {% for field in form %}
+        <div
+          class="expenses-filter__control expenses-filter {% if field.errors %}errors{% endif %}"
+        >
+          {{field.label_tag}} {{field}} {{field.errors}}
+        </div>
+        {% endfor %}
+        <div class="expenses-filter__control expenses-filter">
+          <label for="direction">Direction</label>
+          <select name="direction" id="id_direction">
+            <option value="E">East</option>
+            <option value="W">West</option>
+            <option value="N">North</option>
+            <option value="S">South</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="new-expense__controls">
+        <div class="new-expense__control">
+          <label for="start_distance">Start Distance</label>
+          <input type="text" name="start_distance" />
+        </div>
+        <div class="new-expense__control">
+          <label for="end_distance">End Distance</label>
+          <input type="text" name="end_distance" />
+        </div>
+        <div class="new-expense__control">
+          <label for="side">Side</label>
+          <input type="text" name="side" />
+        </div>
+      </div>
+
+      <button type="submit">Send</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#id_province").change(function () {
+          var provinceId = $(this).val();
+          $.ajax({
+            url: '{% url "get_districts" %}',
+            data: { province_id: provinceId },
+            dataType: "json",
+            success: function (data) {
+              var districtSelect = $("#id_district");
+              districtSelect.empty();
+              districtSelect.append(
+                $("<option>", {
+                  value: "",
+                  text: "Select District",
+                })
+              );
+              $.each(data.districts, function (index, district) {
+                districtSelect.append(
+                  $("<option>", {
+                    value: district.id,
+                    text: district.name,
+                  })
+                );
+              });
+            },
+          });
+        });
+        $("#id_district").change(function () {
+          var districtId = $(this).val();
+          $.ajax({
+            url: '{% url "get_municipalites" %}',
+            data: { district_id: districtId },
+            dataType: "json",
+            success: function (data) {
+              var municipalitySelect = $("#id_municipality");
+              municipalitySelect.empty();
+              municipalitySelect.append(
+                $("<option>", {
+                  value: "",
+                  text: "Select Municipality",
+                })
+              );
+              $.each(data.municipalities, function (index, municipality) {
+                municipalitySelect.append(
+                  $("<option>", {
+                    value: municipality.id,
+                    text: municipality.name,
+                  })
+                );
+              });
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
