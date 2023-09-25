@@ -23,6 +23,7 @@ def index(request):
         # calcualte midpoint
         midpoint = (int(form.data['start_distance']) +
                     int(form.data['end_distance'])) / 2
+        # making it non floating
         midpoint = int(midpoint)
         if (form.data['side'] == 'R'):
             if (midpoint % 2 == 0):
